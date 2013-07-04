@@ -9,6 +9,17 @@ body
 	background-color: #272425;
 }
 
+h1 {
+	color: #bbb;
+	padding-top: 25px;
+	padding-left: 10px;
+}
+
+small {
+	font-size: small;
+	padding-left: 15px;
+}
+
 .cover {
 	width: 100%;
 	height: 100%;
@@ -88,6 +99,17 @@ body
 	background-color: #ff9342;
 	line-height: 520px;
 }
+
+.mobile-tile
+{
+	position: relative;
+	float: none;
+	height: 250px;
+	width: auto;
+
+	line-height: 250px;
+}
+
 /*
 #7f36e1
 #fff62f
