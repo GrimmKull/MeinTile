@@ -1,5 +1,5 @@
 $(function () {
-	for (var i = 0; i < 40; i++) {
+    for (var i = 0; i < 1000; i++) {
 		var rand = Math.ceil(Math.random()*1000)%10;
 
 		if (rand >= 0 && rand < 7)

@@ -1,7 +1,8 @@
 var totalDim = 250 + 20;
+var maxWidthCoef = 2;
 
 var meintile = {
-	grid: [],
+    grid: [],
 
 	columns: 0,
 
@@ -20,50 +21,25 @@ var meintile = {
 	{
 		meintile.columns = Math.floor(document.width/totalDim);
 
-		//console.log(meintile.columns, Math.floor(document.width/totalDim));
+		meintile.grid.push(meintile.emptyRow());		
+	},
 
-		/*var emptyRow = [];
+	isMobile: function() {
+		var maxDim = meintile.getMaxTileDim();
+		return !((document.width/(totalDim*maxDim)) > 1);
+	},
 
-		for (var i = 0; i < meintile.columns; i++) {
-			emptyRow.push(0);
-		};*/
+	getMaxTileDim: function() {
+		var tiles = document.getElementsByClassName('tile');
 
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
-		meintile.grid.push(meintile.emptyRow());
+		var maxDim = 0;
+		for(var i = 0; i < tiles.length; i++)
+		{
+			if (tiles[i].dataset['width'] > maxDim)
+				maxDim = tiles[i].dataset['width'];
+		};
+
+		return maxDim;
 	},
 
 	emptyRow: function() {
@@ -77,13 +53,20 @@ var meintile = {
 	},
 
 	placeTiles: function() {
+		if (meintile.isMobile())
+		{
+			$(".tile").each(function() {
+				this.classList.add('mobile-tile');
+			});
+			return;
+		}
+
 		var tiles = $(".tile");
 
 		for (var i = 0; i < tiles.length; i++) {
 			var tile = tiles[i];
-			var tileWidth = tile.dataset["width"];
-			var tileHeight = tile.dataset["height"];
-//console.log(tile.id, tileWidth, tileHeight);
+			var tileWidth = parseInt(tile.dataset["width"], 10);
+			var tileHeight = parseInt(tile.dataset["height"], 10);
 			var index = -1;
 			var placing = true;
 
@@ -91,20 +74,13 @@ var meintile = {
 			while(placing)
 			{
 				//make sure there is no undefined rows
-				if (meintile.lastRow >= meintile.grid.length)
+				if (meintile.lastRow + searchBellow + tileHeight >= meintile.grid.length)
 				{
 					meintile.grid.push(meintile.emptyRow());
-					meintile.grid.push(meintile.emptyRow());
-					/*meintile.grid.push(meintile.emptyRow());
-					meintile.grid.push(meintile.emptyRow());
-					meintile.grid.push(meintile.emptyRow());
-					meintile.grid.push(meintile.emptyRow());*/
-					//console.log("add 2 rows", meintile.emptyRow());
 				}
 
 				//find one empty space in current row
 				index = meintile.hasEmpty(meintile.lastRow + searchBellow);
-//console.log("searchBellow", searchBellow);
 				if (index == -1)
 				{
 					if (searchBellow == 0)
@@ -114,14 +90,11 @@ var meintile = {
 					continue;
 				}
 
-				//if (searchBellow == 0)
-
 				var wasUndefined = false;
 
 				//if not enough space continue
 				for (var j = 0; j < tileHeight; j++) {						
 					for (var k = 0; k < tileWidth; k++) {
-						//console.log("grid", meintile.lastRow + j, index + k, meintile.grid[meintile.lastRow + j][index + k]);
 						if (meintile.grid[meintile.lastRow + j + searchBellow][index + k] == 1)
 						{
 							wasUndefined = true;;
@@ -129,7 +102,6 @@ var meintile = {
 
 						if (meintile.grid[meintile.lastRow + j + searchBellow][index + k] == undefined)
 						{
-							//console.log("undefined");
 							wasUndefined = true;
 						}
 					};
@@ -137,7 +109,6 @@ var meintile = {
 
 				if (wasUndefined)
 				{
-					//console.log("undefined");
 					searchBellow++;
 					continue;
 				}
@@ -145,23 +116,20 @@ var meintile = {
 				for (var j = 0; j < tileHeight; j++) {						
 					for (var k = 0; k < tileWidth; k++) {
 						meintile.grid[meintile.lastRow + j + searchBellow][index + k] = 1;
-						//console.log("grid after", meintile.lastRow + j, index + k, meintile.grid[meintile.lastRow + j][index + k]);
 					};
 				};
 
-				/*tile.style.float = "none";*/
-				tile.style.top = (meintile.lastRow + searchBellow) * totalDim;
-				tile.style.left = index * totalDim;
+				/*console.log(tile.style.top, meintile.lastRow, searchBellow, totalDim);
+				console.log(tile.style.left, index, totalDim)*/
+
+				tile.style.top = (meintile.lastRow + searchBellow) * totalDim + "px";
+				tile.style.left = index * totalDim + "px";
 
 				placing = false;
 				searchBellow = 0;
 			}
-
-//console.log("after while");
-			//while (grid[lastColumn][lastRow] == 0)
-				//lastRow++;
 		};
-		//console.log("after for");
+		meintile.centerTiles();
 	},
 
 	/* returns index of empty field in row or -1 if there is none */
@@ -223,5 +191,10 @@ var meintile = {
 		}).appendTo('.tiles');
 
 		meintile.count++;
+	},
+
+	centerTiles: function() {
+		document.getElementsByClassName("tiles")[0].style.width = totalDim*meintile.columns  + "px";
+		document.getElementsByClassName("tiles")[0].style.margin = "auto";
 	}
 };
