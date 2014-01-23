@@ -19,14 +19,14 @@ var meintile = {
 
 	init: function()
 	{
-		meintile.columns = Math.floor(document.width/totalDim);
+		meintile.columns = Math.floor(document.body.clientWidth/totalDim);
 
 		meintile.grid.push(meintile.emptyRow());		
 	},
 
 	isMobile: function() {
 		var maxDim = meintile.getMaxTileDim();
-		return !((document.width/(totalDim*maxDim)) > 1);
+		return !((document.body.clientWidth/(totalDim*maxDim)) > 1);
 	},
 
 	getMaxTileDim: function() {
@@ -35,8 +35,8 @@ var meintile = {
 		var maxDim = 0;
 		for(var i = 0; i < tiles.length; i++)
 		{
-			if (tiles[i].dataset['width'] > maxDim)
-				maxDim = tiles[i].dataset['width'];
+			if (parseInt(tiles[i].dataset['width']) > maxDim)
+				maxDim = parseInt(tiles[i].dataset['width']);
 		};
 
 		return maxDim;
